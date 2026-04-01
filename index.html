@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cofre Seguro</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b0b0b;
+      color: #e8e8e8;
+      min-height: 100vh;
+      padding: 18px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+      border-bottom: 1px solid #2d2d2d;
+      padding-bottom: 18px;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      color: #fff;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: #9a9a9a;
+      font-size: 0.9rem;
+    }
+
+    .panel {
+      background: #151515;
+      border: 1px solid #2d2d2d;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: #d3d3d3;
+      font-size: 0.92rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #3a3a3a;
+      background: #222;
+      color: #f5f5f5;
+      font-size: 0.95rem;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #5a89ff;
+      background: #282828;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      padding: 13px;
+      background: #1664ff;
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.93;
+    }
+
+    .btn-secondary {
+      background: #333;
+    }
+
+    .btn-danger {
+      background: #c62828;
+      width: auto;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+    }
+
+    .note {
+      background: #151515;
+      border: 1px solid #2d2d2d;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      align-items: flex-start;
+    }
+
+    .note-title {
+      color: #fff;
+      font-weight: 700;
+      word-break: break-word;
+      max-width: 70%;
+    }
+
+    .note-date {
+      color: #929292;
+      font-size: 0.8rem;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .note-content {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #202020;
+      border-left: 3px solid #1664ff;
+      border-radius: 6px;
+      padding: 12px;
+      color: #eaeaea;
+    }
+
+    .note-actions {
+      margin-top: 12px;
+      text-align: right;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat {
+      background: #151515;
+      border: 1px solid #2d2d2d;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .stat-number {
+      display: block;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      color: #999;
+      font-size: 0.82rem;
+    }
+
+    .lock-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(5,5,5,0.98);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 9999;
+    }
+
+    .lock-box {
+      width: 100%;
+      max-width: 420px;
+      background: #151515;
+      border: 1px solid #2d2d2d;
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .lock-title {
+      text-align: center;
+      color: #fff;
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .lock-subtitle {
+      text-align: center;
+      color: #909090;
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+    }
+
+    .lock-error {
+      min-height: 20px;
+      color: #ff7878;
+      text-align: center;
+      font-size: 0.84rem;
+      margin-top: 12px;
+    }
+
+    .small-info {
+      margin-top: 12px;
+      text-align: center;
+      color: #8c8c8c;
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .app-hidden {
+      visibility: hidden;
+    }
+
+    .empty {
+      text-align: center;
+      color: #8b8b8b;
+      padding: 40px 16px;
+      background: #151515;
+      border: 1px solid #2d2d2d;
+      border-radius: 10px;
+    }
+
+    .actions-grid {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="lockScreen" class="lock-screen">
+    <div class="lock-box">
+      <div class="lock-title">COFRE SEGURO</div>
+      <div class="lock-subtitle" id="lockSubtitle">crie sua senha mestra no primeiro acesso</div>
+
+      <div class="input-group">
+        <label id="passwordLabel">senha mestra</label>
+        <input type="password" id="passwordInput" placeholder="Digite sua senha" autocomplete="off" />
+      </div>
+
+      <div class="input-group" id="confirmGroup">
+        <label>confirmar senha</label>
+        <input type="password" id="confirmPasswordInput" placeholder="Confirme sua senha" autocomplete="off" />
+      </div>
+
+      <button class="btn" id="mainLockBtn">criar senha</button>
+      <button class="btn btn-secondary hidden" id="resetBtn" style="margin-top:10px;">redefinir senha</button>
+
+      <div class="small-info">
+        as notas são criptografadas no dispositivo. a senha não é salva em texto.
+      </div>
+
+      <div class="lock-error" id="lockError"></div>
+    </div>
+  </div>
+
+  <div class="container app-hidden" id="appContainer">
+    <div class="header">
+      <h1>COFRE SEGURO</h1>
+      <div class="subtitle">notas protegidas por criptografia local</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-number" id="totalNotes">0</span>
+        <span class="stat-label">total</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number" id="todayNotes">0</span>
+        <span class="stat-label">hoje</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="actions-grid">
+        <button class="btn btn-secondary" id="lockNowBtn">bloquear agora</button>
+      </div>
+
+      <div class="input-group">
+        <label>título</label>
+        <input type="text" id="titleInput" maxlength="60" placeholder="Ex.: Gmail, banco, anotação..." />
+      </div>
+
+      <div class="input-group">
+        <label>conteúdo</label>
+        <textarea id="contentInput" maxlength="2000" placeholder="Digite sua nota..."></textarea>
+      </div>
+
+      <button class="btn" id="saveBtn">salvar nota</button>
+    </div>
+
+    <div id="notesContainer"></div>
+  </div>
+
+  <script>
+    const STORAGE_CONFIG = 'vaultSecureConfig';
+    const STORAGE_DATA = 'vaultSecureData';
+    const STORAGE_FAILS = 'vaultSecureFails';
+    const STORAGE_LOCK_UNTIL = 'vaultSecureLockUntil';
+
+    const PBKDF2_ITERATIONS = 250000;
+
+    let sessionKey = null;
+    let notes = [];
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function showError(msg) {
+      $('lockError').textContent = msg || '';
+    }
+
+    function getConfig() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_CONFIG));
+      } catch {
+        return null;
+      }
+    }
+
+    function setConfig(config) {
+      localStorage.setItem(STORAGE_CONFIG, JSON.stringify(config));
+    }
+
+    function hasConfig() {
+      return !!getConfig();
+    }
+
+    function arrayBufferToBase64(buffer) {
+      const bytes = new Uint8Array(buffer);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      return btoa(binary);
+    }
+
+    function base64ToArrayBuffer(base64) {
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return bytes.buffer;
+    }
+
+    function strToUint8(str) {
+      return new TextEncoder().encode(str);
+    }
+
+    function uint8ToStr(uint8) {
+      return new TextDecoder().decode(uint8);
+    }
+
+    function randomBytes(length) {
+      const arr = new Uint8Array(length);
+      crypto.getRandomValues(arr);
+      return arr;
+    }
+
+    async function deriveAesKey(password, saltBase64) {
+      const keyMaterial = await crypto.subtle.importKey(
+        'raw',
+        strToUint8(password),
+        'PBKDF2',
+        false,
+        ['deriveKey']
+      );
+
+      return crypto.subtle.deriveKey(
+        {
+          name: 'PBKDF2',
+          salt: new Uint8Array(base64ToArrayBuffer(saltBase64)),
+          iterations: PBKDF2_ITERATIONS,
+          hash: 'SHA-256'
+        },
+        keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt', 'decrypt']
+      );
+    }
+
+    async function encryptText(text, key) {
+      const iv = randomBytes(12);
+      const cipher = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv },
+        key,
+        strToUint8(text)
+      );
+
+      return {
+        iv: arrayBufferToBase64(iv.buffer),
+        data: arrayBufferToBase64(cipher)
+      };
+    }
+
+    async function decryptText(payload, key) {
+      const decrypted = await crypto.subtle.decrypt(
+        {
+          name: 'AES-GCM',
+          iv: new Uint8Array(base64ToArrayBuffer(payload.iv))
+        },
+        key,
+        base64ToArrayBuffer(payload.data)
+      );
+
+      return uint8ToStr(new Uint8Array(decrypted));
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function getLockRemainingMs() {
+      const until = parseInt(localStorage.getItem(STORAGE_LOCK_UNTIL) || '0', 10);
+      return Math.max(0, until - Date.now());
+    }
+
+    function isLockedTemporarily() {
+      return getLockRemainingMs() > 0;
+    }
+
+    function resetFailState() {
+      localStorage.removeItem(STORAGE_FAILS);
+      localStorage.removeItem(STORAGE_LOCK_UNTIL);
+    }
+
+    function registerFail() {
+      const fails = parseInt(localStorage.getItem(STORAGE_FAILS) || '0', 10) + 1;
+      localStorage.setItem(STORAGE_FAILS, String(fails));
+
+      if (fails >= 5) {
+        localStorage.setItem(STORAGE_LOCK_UNTIL, String(Date.now() + 60000));
+        localStorage.setItem(STORAGE_FAILS, '0');
+        return true;
+      }
+      return false;
+    }
+
+    function formatRemaining(ms) {
+      return `${Math.ceil(ms / 1000)}s`;
+    }
+
+    function validatePassword(password) {
+      return typeof password === 'string' && password.length >= 8;
+    }
+
+    function clearPasswordFields() {
+      $('passwordInput').value = '';
+      $('confirmPasswordInput').value = '';
+    }
+
+    function setupLockScreen() {
+      showError('');
+      clearPasswordFields();
+
+      if (hasConfig()) {
+        $('lockSubtitle').textContent = 'digite sua senha para desbloquear';
+        $('confirmGroup').classList.add('hidden');
+        $('mainLockBtn').textContent = 'entrar';
+        $('resetBtn').classList.remove('hidden');
+      } else {
+        $('lockSubtitle').textContent = 'crie sua senha mestra no primeiro acesso';
+        $('confirmGroup').classList.remove('hidden');
+        $('mainLockBtn').textContent = 'criar senha';
+        $('resetBtn').classList.add('hidden');
+      }
+    }
+
+    async function createVault(password) {
+      const salt = arrayBufferToBase64(randomBytes(16).buffer);
+      const key = await deriveAesKey(password, salt);
+
+      const verifier = await encryptText('vault-ok', key);
+      const encryptedNotes = await encryptText(JSON.stringify([]), key);
+
+      setConfig({
+        version: 1,
+        salt,
+        verifier
+      });
+
+      localStorage.setItem(STORAGE_DATA, JSON.stringify(encryptedNotes));
+      sessionKey = key;
+      notes = [];
+    }
+
+    async function unlockVault(password) {
+      const config = getConfig();
+      if (!config) throw new Error('Configuração não encontrada');
+
+      const key = await deriveAesKey(password, config.salt);
+
+      const test = await decryptText(config.verifier, key);
+      if (test !== 'vault-ok') {
+        throw new Error('Senha incorreta');
+      }
+
+      sessionKey = key;
+
+      const encryptedDataRaw = localStorage.getItem(STORAGE_DATA);
+      if (!encryptedDataRaw) {
+        notes = [];
+        await persistNotes();
+        return;
+      }
+
+      const decrypted = await decryptText(JSON.parse(encryptedDataRaw), sessionKey);
+      const parsed = JSON.parse(decrypted);
+      notes = Array.isArray(parsed) ? parsed : [];
+    }
+
+    async function persistNotes() {
+      if (!sessionKey) return;
+      const encrypted = await encryptText(JSON.stringify(notes), sessionKey);
+      localStorage.setItem(STORAGE_DATA, JSON.stringify(encrypted));
+      updateStats();
+      renderNotes();
+    }
+
+    function unlockUI() {
+      $('lockScreen').style.display = 'none';
+      $('appContainer').classList.remove('app-hidden');
+      updateStats();
+      renderNotes();
+      resetFailState();
+    }
+
+    function lockUI() {
+      sessionKey = null;
+      $('lockScreen').style.display = 'flex';
+      $('appContainer').classList.add('app-hidden');
+      setupLockScreen();
+    }
+
+    async function handleMainAction() {
+      try {
+        showError('');
+
+        if (isLockedTemporarily()) {
+          showError(`muitas tentativas. aguarde ${formatRemaining(getLockRemainingMs())}`);
+          return;
+        }
+
+        const password = $('passwordInput').value;
+        const confirm = $('confirmPasswordInput').value;
+
+        if (!validatePassword(password)) {
+          showError('use uma senha com pelo menos 8 caracteres');
+          return;
+        }
+
+        if (!hasConfig()) {
+          if (password !== confirm) {
+            showError('as senhas não coincidem');
+            return;
+          }
+
+          await createVault(password);
+          clearPasswordFields();
+          unlockUI();
+          return;
+        }
+
+        await unlockVault(password);
+        clearPasswordFields();
+        unlockUI();
+      } catch (err) {
+        $('passwordInput').value = '';
+        const blocked = registerFail();
+        if (blocked) {
+          showError('acesso bloqueado por 60 segundos');
+        } else {
+          showError('senha incorreta');
+        }
+      }
+    }
+
+    function updateStats() {
+      $('totalNotes').textContent = notes.length;
+
+      const today = notes.filter(note => {
+        return new Date(note.date).toDateString() === new Date().toDateString();
+      }).length;
+
+      $('todayNotes').textContent = today;
+    }
+
+    function renderNotes() {
+      const container = $('notesContainer');
+
+      if (!notes.length) {
+        container.innerHTML = `
+          <div class="empty">
+            <div style="font-size:1rem; margin-bottom:6px;">nenhuma nota salva</div>
+            <div style="font-size:0.84rem;">suas notas aparecerão aqui após serem descriptografadas</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = notes.map(note => {
+        const date = new Date(note.date).toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        return `
+          <div class="note">
+            <div class="note-header">
+              <div class="note-title">${escapeHtml(note.title)}</div>
+              <div class="note-date">${date}</div>
+            </div>
+            <div class="note-content">${escapeHtml(note.content)}</div>
+            <div class="note-actions">
+              <button class="btn btn-danger" onclick="deleteNote(${note.id})">excluir</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function saveNote() {
+      if (!sessionKey) {
+        alert('o cofre está bloqueado');
+        return;
+      }
+
+      const title = $('titleInput').value.trim();
+      const content = $('contentInput').value.trim();
+
+      if (!title || !content) {
+        alert('preencha título e conteúdo');
+        return;
+      }
+
+      notes.unshift({
+        id: Date.now(),
+        title: title.slice(0, 60),
+        content: content.slice(0, 2000),
+        date: new Date().toISOString()
+      });
+
+      await persistNotes();
+
+      $('titleInput').value = '';
+      $('contentInput').value = '';
+
+      const btn = $('saveBtn');
+      const original = btn.textContent;
+      btn.textContent = 'salvo ✓';
+      btn.style.background = '#1f9d49';
+
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.background = '';
+      }, 1200);
+    }
+
+    async function deleteNote(id) {
+      if (!sessionKey) return;
+      if (!confirm('excluir nota?')) return;
+
+      notes = notes.filter(note => note.id !== id);
+      await persistNotes();
+    }
+
+    async function resetPassword() {
+      if (!hasConfig()) return;
+
+      const current = prompt('Digite sua senha atual:');
+      if (current === null) return;
+
+      try {
+        await unlockVault(current);
+      } catch {
+        alert('senha atual incorreta');
+        return;
+      }
+
+      localStorage.removeItem(STORAGE_CONFIG);
+      localStorage.removeItem(STORAGE_DATA);
+      sessionKey = null;
+      notes = [];
+      lockUI();
+      showError('crie sua nova senha. as notas antigas foram apagadas por segurança');
+    }
+
+    $('mainLockBtn').addEventListener('click', handleMainAction);
+    $('saveBtn').addEventListener('click', saveNote);
+    $('lockNowBtn').addEventListener('click', lockUI);
+    $('resetBtn').addEventListener('click', resetPassword);
+
+    document.addEventListener('keydown', (e) => {
+      const lockVisible = $('lockScreen').style.display !== 'none';
+
+      if (lockVisible && e.key === 'Enter') {
+        e.preventDefault();
+        handleMainAction();
+        return;
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        saveNote();
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        lockUI();
+      }
+    });
+
+    window.addEventListener('beforeunload', () => {
+      sessionKey = null;
+    });
+
+    setupLockScreen();
+  </script>
+</body>
+</html>
